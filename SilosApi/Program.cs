@@ -75,7 +75,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -122,7 +121,7 @@ using (var serviceScope = app.Services.CreateScope())
                         Username = user.Username, 
                         Password = user.Password
                     }, 
-                    user.UserRoleEnum);
+                    user.UserRole);
             }
         }
     }
