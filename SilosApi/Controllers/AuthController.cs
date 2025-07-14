@@ -6,7 +6,7 @@ using SilosApi.Services;
 namespace SilosApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v1/[controller]")]
 [AllowAnonymous]
 public class AuthController(IAuthService authService) : ControllerBase
 {
