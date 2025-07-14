@@ -12,13 +12,7 @@ public class SilosConfiguration : IEntityTypeConfiguration<Silos>
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(e => e.StartDate)
-            .HasColumnType("date");
-
-        builder.Property(e => e.HarvestYear)
-            .HasMaxLength(4);
-
         builder.Property(e => e.AdditionalInfo)
-            .HasMaxLength(500);
+            .HasMaxLength(2000);
     }
 }

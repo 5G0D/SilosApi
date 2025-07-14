@@ -81,7 +81,7 @@ public class SilosDto
     /// Год урожая
     /// </summary>
     /// <example>2023</example>
-    public int? HarvestYear { get; set; }
+    public DateTime? HarvestYear { get; set; }
 
     /// <summary>
     /// Класс зерна

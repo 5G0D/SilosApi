@@ -22,8 +22,8 @@ public class SilosFilterDto
     public double? HumidityTo { get; set; }
     public DateTime? StartDateFrom { get; set; }
     public DateTime? StartDateTo { get; set; }
-    public int? HarvestYearFrom { get; set; }
-    public int? HarvestYearTo { get; set; }
+    public DateTime? HarvestYearFrom { get; set; }
+    public DateTime? HarvestYearTo { get; set; }
     public int? ClassFrom { get; set; }
     public int? ClassTo { get; set; }
     public double? GlutenFrom { get; set; }

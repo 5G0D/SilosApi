@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SilosApi.Dto;
 using SilosApi.Services;
 
@@ -6,6 +7,7 @@ namespace SilosApi.Controllers;
 
 [ApiController]
 [Route("api/v1/Siloses")]
+[Authorize]
 [Produces("application/json")]
 [Consumes("application/json")]
 public class SilosController(ISilosService silosService) : ControllerBase
@@ -73,6 +75,7 @@ public class SilosController(ISilosService silosService) : ControllerBase
     /// <response code="400">Некорректные входные данные</response>
     /// <response code="500">Произошла внутренняя ошибка сервера</response>
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(SilosDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
@@ -105,6 +108,7 @@ public class SilosController(ISilosService silosService) : ControllerBase
     /// <response code="404">Силос не найден</response>
     /// <response code="500">Произошла внутренняя ошибка сервера</response>
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -146,6 +150,7 @@ public class SilosController(ISilosService silosService) : ControllerBase
     /// <response code="404">Силос не найден</response>
     /// <response code="500">Произошла внутренняя ошибка сервера</response>
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]

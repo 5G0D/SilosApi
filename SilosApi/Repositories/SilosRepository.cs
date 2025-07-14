@@ -62,10 +62,9 @@ public class SilosRepository(SilosDbContext context) : ISilosRepository
         // Фильтрация по текстовым полям
         if (!string.IsNullOrEmpty(filter.Name))
             query = query.Where(s => s.Name.Contains(filter.Name));
-    
+        
         if (!string.IsNullOrEmpty(filter.Culture))
-            query = query.Where(s => s.AdditionalInfo != null && 
-                                     s.AdditionalInfo.Contains(filter.Culture));
+            query = query.Where(s => s.Culture.Contains(filter.Culture));
 
         // Фильтрация по числовым диапазонам
         query = ApplyNumericFilters(query, filter);
@@ -156,22 +155,22 @@ public class SilosRepository(SilosDbContext context) : ISilosRepository
         if (filter.FreeFootageTo.HasValue)
             query = query.Where(s => s.FreeFootage <= filter.FreeFootageTo);
         
-        // Год Урожая
-        if (filter.HarvestYearFrom.HasValue)
-            query = query.Where(s => s.HarvestYear >= filter.HarvestYearFrom);
-        if (filter.HarvestYearTo.HasValue)
-            query = query.Where(s => s.HarvestYear <= filter.HarvestYearTo);
-        
         return query;
     }
 
     private IQueryable<Silos> ApplyDateFilters(IQueryable<Silos> query, SilosFilterDto filter)
     {
-        // Фильтрация по дате начала хранения
+        // Дата начала хранения
         if (filter.StartDateFrom.HasValue)
             query = query.Where(s => s.StartDate >= filter.StartDateFrom);
         if (filter.StartDateTo.HasValue)
             query = query.Where(s => s.StartDate <= filter.StartDateTo);
+        
+        // Год Урожая
+        if (filter.HarvestYearFrom.HasValue)
+            query = query.Where(s => s.HarvestYear >= filter.HarvestYearFrom);
+        if (filter.HarvestYearTo.HasValue)
+            query = query.Where(s => s.HarvestYear <= filter.HarvestYearTo);
 
         return query;
     }
