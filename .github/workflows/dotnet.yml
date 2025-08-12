@@ -10,19 +10,21 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
-
+    if: github.ref == 'refs/heads/main'
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      - uses: actions/checkout@v4
+      - name: Run command on remote server
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{secrets.SSH_HOST}}
+          user: ${{secrets.SSH_USER}}
+          private_key: ${{secrets.SSH_PRIVATE_KEY}}
+          command: |
+            cd ${{ secrets.PROJECT_FOLDER }};
+            git checkout main;
+            git pull;
+            docker-compose down;
+            docker-compose up --build -d;
+            docker system prune --all --force;
