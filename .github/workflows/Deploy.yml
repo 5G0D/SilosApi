@@ -70,13 +70,6 @@ jobs:
           name: Test Results
           path: "**/test-results.trx"
           reporter: dotnet-trx
-      
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: test-reports
-          path: "**/test-results.trx"
   
   deploy:
     needs: test
