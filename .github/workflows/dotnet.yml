@@ -41,6 +41,7 @@ jobs:
       uses: github/codeql-action/analyze@v1
   
   deploy:
+    needs: analyze
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
