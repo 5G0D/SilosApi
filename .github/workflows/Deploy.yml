@@ -21,7 +21,10 @@ jobs:
           dotnet-version: '9.0.x'
           
       - name: Build
-        run: dotnet publish -c Release -o publish
+        run: |
+          dotnet publish -c Release -o publish
+          cd ./publish
+          zip -r ../SilosApi.zip ./*
 
       - name: Bump version
         id: tag_version
@@ -45,8 +48,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./publish/myapp.zip
-          asset_name: myapp-main.zip
+          asset_path: ./publish/SilosApi.zip
+          asset_name: SilosApi.zip
           asset_content_type: application/zip
 
   analyze:
