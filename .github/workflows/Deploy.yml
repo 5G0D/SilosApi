@@ -23,12 +23,20 @@ jobs:
       - name: Install zip
         run: sudo apt-get update && sudo apt-get install -y zip
         
-      - name: Build
+      - name: Build and package
         run: |
+          # Публикуем в папку publish
           dotnet publish -c Release -o publish
-          cd ./publish
-          zip -r ../SilosApi.zip ./*
-
+          
+          # Переходим в корень проекта (важно!)
+          cd $GITHUB_WORKSPACE  
+          
+          # Создаем архив из содержимого папки publish
+          zip -r SilosApi.zip ./publish/*
+          
+          # Проверяем что архив создан
+          ls -lh SilosApi.zip
+  
       - name: Bump version
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
@@ -37,13 +45,13 @@ jobs:
           default_bump: minor
       
       - name: Create Release
-        id: create_release  # ID для доступа к outputs
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.tag_version.outputs.new_tag  }}
-          release_name: Release ${{ steps.tag_version.outputs.new_tag  }}
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
           
       - name: Upload Asset
         uses: actions/upload-release-asset@v1
@@ -51,8 +59,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./publish/SilosApi.zip
-          asset_name: SilosApi.zip
+          asset_path: ./SilosApi.zip  # Теперь архив в корне
+          asset_name: SilosApi-${{ steps.tag_version.outputs.new_tag }}.zip
           asset_content_type: application/zip
 
   analyze:
