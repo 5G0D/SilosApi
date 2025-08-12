@@ -11,7 +11,7 @@ on:
 
 jobs:    
   analyze:
-
+    needs: test
     name: analyze
     runs-on: self-hosted
 
@@ -45,7 +45,6 @@ jobs:
       uses: github/codeql-action/analyze@v3
 
   test:
-    #needs: analyze
     runs-on: self-hosted
     steps:
       - name: Check out repository code
