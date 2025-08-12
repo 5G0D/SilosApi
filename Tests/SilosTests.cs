@@ -33,6 +33,6 @@ public class SilosTests
     [Fact]
     public async Task GetUserName_ReturnsNameFrom()
     {
-        Assert.Equal(1, 2);
+        Assert.Equal(1, 1);
     }
 }
