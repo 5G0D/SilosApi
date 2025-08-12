@@ -29,4 +29,10 @@ public class SilosTests
         
         mockUserService.Verify(x => x.GetAllSilosAsync(null), Times.Once);  // Проверка, что метод вызван 1 раз
     }
+    
+    [Fact]
+    public async Task GetUserName_ReturnsNameFrom()
+    {
+        Assert.Equal(1, 2);
+    }
 }
