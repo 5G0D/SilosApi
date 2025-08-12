@@ -23,11 +23,12 @@ jobs:
       - name: Build
         run: dotnet publish -c Release -o publish
 
-      - name: Get next version
-        id: version
+      - name: Bump version
+        id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: minor
       
       - name: Create Release
         id: create_release  # ID для доступа к outputs
@@ -35,8 +36,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.version.outputs.tag_name }}
-          release_name: Release ${{ steps.version.outputs.tag_name }}
+          tag_name: ${{ steps.tag_version.outputs.new_tag  }}
+          release_name: Release ${{ steps.tag_version.outputs.new_tag  }}
           
       - name: Upload Asset
         uses: actions/upload-release-asset@v1
