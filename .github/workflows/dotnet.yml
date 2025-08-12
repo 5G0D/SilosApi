@@ -10,9 +10,21 @@ on:
     branches: [ "main" ]
 
 jobs:
+  outdated:
+    runs-on: self-hosted
+    steps:
+    - name: Restore
+      run: dotnet restore
+    - name: My action
+      uses: gavanlamb/.net-outdated@latest
+      with:
+        add-pr-comment: true
+        add-check-run: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      
   deploy:
     runs-on: self-hosted
-    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
       - name: Run command on remote server
