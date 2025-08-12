@@ -12,6 +12,9 @@ on:
 jobs:
   outdated:
     runs-on: self-hosted
+    permissions:
+      checks: write
+      pull-requests: write
     steps:
     - name: Restore
       run: dotnet restore
