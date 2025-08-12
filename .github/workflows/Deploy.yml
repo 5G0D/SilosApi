@@ -65,6 +65,7 @@ jobs:
         run: dotnet test Tests/Tests.csproj --logger "trx;logfilename=test-results.trx"
       
       - name: Publish results
+        if: always()
         uses: dorny/test-reporter@v1
         with:
           name: Test Results
