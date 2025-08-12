@@ -1,0 +1,12 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: SilosApi/Dockerfile
+    image: "silos-api"
+    container_name: "silos-api"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development   
+    restart: unless-stopped
+    ports:
+      - "9451:8080"
