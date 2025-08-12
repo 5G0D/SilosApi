@@ -62,7 +62,7 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test Tests/Tests.csproj --logger --blame-hang --blame-hang-timeout 30s "trx;logfilename=test-results.trx"
+        run: dotnet test Tests/Tests.csproj --logger "trx;logfilename=test-results.trx"
       
       - name: Publish results
         if: always()
