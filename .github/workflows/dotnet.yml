@@ -9,23 +9,7 @@ on:
   pull_request:
     branches: [ "main" ]
 
-jobs:
-  outdated:
-    runs-on: self-hosted
-    permissions:
-      checks: write
-      pull-requests: write
-    steps:
-    - name: Restore
-      run: dotnet restore
-    - name: My action
-      uses: gavanlamb/.net-outdated@latest
-      with:
-        add-pr-comment: true
-        add-check-run: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      
+jobs:      
   deploy:
     runs-on: self-hosted
     steps:
