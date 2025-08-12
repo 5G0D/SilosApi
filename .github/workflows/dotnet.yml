@@ -9,22 +9,57 @@ on:
   pull_request:
     branches: [ "main" ]
 
-jobs:
-  deploy:
+jobs:    
+  analyze:
+
+    name: analyze
     runs-on: self-hosted
-    if: github.ref == 'refs/heads/main'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['csharp']
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Build with dotnet
+      run: |
+        dotnet restore
+        dotnet build --configuration Release --no-restore
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+  
+  deploy:
+    needs: analyze
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
       - name: Run command on remote server
-        uses: D3rHase/ssh-command-action@v0.2.2
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{secrets.SSH_HOST}}
-          user: ${{secrets.SSH_USER}}
-          private_key: ${{secrets.SSH_PRIVATE_KEY}}
-          command: |
+          username: ${{secrets.SSH_USER}}
+          password: ${{secrets.SSH_PASSWORD}}
+          port: 22
+          script: |
             cd ${{ secrets.PROJECT_FOLDER }};
             git checkout main;
             git pull;
-            docker-compose down;
-            docker-compose up --build -d;
+            docker compose down;
+            docker compose up --build -d;
             docker system prune --all --force;
