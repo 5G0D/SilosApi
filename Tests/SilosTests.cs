@@ -26,7 +26,7 @@ public class SilosTests
         // Assert
         //result.Should().Be(new List<SilosDto>());
         Assert.IsType<OkObjectResult>(result.Result);
-        
+         
         mockUserService.Verify(x => x.GetAllSilosAsync(null), Times.Once);  // Проверка, что метод вызван 1 раз
     }
     
