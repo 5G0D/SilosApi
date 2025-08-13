@@ -12,7 +12,7 @@ on:
 jobs:   
   analyze:
     #needs: release
-    name: analyze
+    name: Analyze
     runs-on: self-hosted
 
     strategy:
@@ -45,6 +45,7 @@ jobs:
       uses: github/codeql-action/analyze@v3
 
   test:
+    name: 🧪 Test
     needs: analyze
     runs-on: self-hosted
     steps:
@@ -74,6 +75,7 @@ jobs:
           reporter: dotnet-trx
 
   release:
+    name: Release
     needs: test
     runs-on: self-hosted
     steps:
@@ -127,6 +129,7 @@ jobs:
           asset_content_type: application/zip
   
   deploy:
+    name: Deploy
     needs: test
     runs-on: self-hosted
     steps:
