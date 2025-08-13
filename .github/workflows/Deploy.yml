@@ -9,9 +9,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
-jobs:    
+jobs:   
   analyze:
-    name: analyze
+    #needs: release
+    name: Analyze
     runs-on: self-hosted
 
     strategy:
@@ -44,6 +45,7 @@ jobs:
       uses: github/codeql-action/analyze@v3
 
   test:
+    name: 🧪 Test
     needs: analyze
     runs-on: self-hosted
     steps:
@@ -62,7 +64,7 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test Tests/Tests.csproj --logger --blame-hang --blame-hang-timeout 30s "trx;logfilename=test-results.trx"
+        run: dotnet test Tests/Tests.csproj --logger "trx;logfilename=test-results.trx"
       
       - name: Publish results
         if: always()
@@ -71,8 +73,63 @@ jobs:
           name: Test Results
           path: "**/test-results.trx"
           reporter: dotnet-trx
+
+  release:
+    name: Release
+    needs: test
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+          
+      - name: Install zip
+        run: sudo apt-get update && sudo apt-get install -y zip
+        
+      - name: Build and package
+        run: |
+          # Публикуем в папку publish
+          dotnet publish -c Release -o publish
+          
+          # Переходим в папку publish и архивируем её содержимое
+          cd publish
+          zip -r ../SilosApi.zip ./*
+          
+          # Возвращаемся в корень и проверяем архив
+          cd ..
+          ls -lh SilosApi.zip
+  
+      - name: Bump version
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: minor
+      
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+          
+      - name: Upload Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./SilosApi.zip
+          asset_name: SilosApi-${{ steps.tag_version.outputs.new_tag }}.zip
+          asset_content_type: application/zip
   
   deploy:
+    name: Deploy
     needs: test
     runs-on: self-hosted
     steps:
